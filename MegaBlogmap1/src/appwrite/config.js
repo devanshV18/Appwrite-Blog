@@ -30,6 +30,7 @@ export class DbService{
             )
         } catch (error) {
             console.log("appwrite error", error);
+            return false
         }
     }
 
@@ -48,6 +49,7 @@ export class DbService{
             )
         } catch (error) {
             console.log("Appwrite service BT", error);
+            return false
         }
 
     }
@@ -79,11 +81,53 @@ export class DbService{
             )
         } catch (error) {
             console.log("Appwrite error",error);
-            return false;
+            return false
         }
 
+    }
+
+    async getPosts(queries = [Query.equal("status", "active")]){
+        try {
+            return await this.databases.listDocuments(
+                conf.appWriteDatabaseId,
+                conf.appWriteCollectionId,
+                // [Query.equal("status", "active")]
+                // or
+                queries,
+                )
+        } catch (error) {
+            console.log("appwrite error", error);
+            return false
+        }
+    }
+
+    //file upload service
+
+    async uploadFile(file){
+        try {
+            return await this.bucket.createFile(
+                conf.appWriteBucketId,
+                ID.unique(),
+                file,
+            )
+        } catch (error) {
+            console.log("appwrite error", error);
+            return false
+        }
+    }
+
+    async deleteFile(fileId){
+        try {
+            return await this.bucket.deleteFile(
+                conf.appWriteBucketId,
+                fileId,
+            )
+        } catch (error) {
+            console.log("appwrite error", error);
+            return false
+        }
     }
 }
 
 const service = new DbService()
-export default service
+export default service 
